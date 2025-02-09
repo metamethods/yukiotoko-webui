@@ -9,17 +9,15 @@
 
   let { data } = $props();
 
-  let filteredRooms: YukiotokoRoom[] = $state([]);
-  let rooms: YukiotokoRoom[] = $state([]);
+  let rooms: YukiotokoRoom[] = $state(data.rooms);
 
   let hideMergedRooms = $state(true);
   let hideClosedRooms = $state(true);
   let showRoomsAtLatestVersion = $state(false);
   let showRoomDetails = $state(false);
 
-  function filterRooms() {
-    filteredRooms = data.rooms.filter((room) => {
-      console.log("update");
+  let filteredRooms: YukiotokoRoom[] = $derived(
+    rooms.filter((room) => {
       if (
         (hideMergedRooms && room.mergedWith) ||
         (hideClosedRooms && room.status === "Closed") ||
@@ -28,10 +26,9 @@
       )
         return false;
       return true;
-    });
-  }
-
-  $effect(filterRooms);
+    })
+  );
+  let roomPageItems: YukiotokoRoom[] = $state([]);
 
   onMount(() => {
     setInterval(async () => {
@@ -39,10 +36,8 @@
         .then((response) => response.json())
         .catch(() => undefined);
 
-      if (newRooms) {
-        rooms = newRooms;
-        filterRooms();
-      } else {
+      if (newRooms) rooms = newRooms;
+      else {
         console.log("Failed to fetch");
         /** Probably show some warning saying it failed to update or smh */
       }
@@ -107,14 +102,14 @@
     <Pagination
       items={filteredRooms}
       itemsPerPage={20}
-      bind:pageItems={rooms}
+      bind:pageItems={roomPageItems}
     />
-    {#if rooms.length == 0}
+    {#if roomPageItems.length == 0}
       <p class="text-4xl font-bold mx-auto my-8 text-overlay0">
         no rooms what!!
       </p>
     {:else}
-      <Rooms {rooms} {showRoomDetails} />
+      <Rooms rooms={roomPageItems} {showRoomDetails} />
     {/if}
   </section>
 </div>

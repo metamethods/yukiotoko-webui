@@ -12,6 +12,10 @@
 
   let roomTimer = $state(room.timeRemaining);
 
+  $effect(() => {
+    roomTimer = room.timeRemaining;
+  });
+
   setInterval(() => {
     roomTimer = Math.max(roomTimer - 1, 0);
   }, 1000);
