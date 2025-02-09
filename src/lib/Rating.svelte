@@ -18,9 +18,7 @@
                   ? "gold"
                   : rating <= 15.99
                     ? "platinum"
-                    : rating <= 17.37
-                      ? "rainbow"
-                      : "white"
+                    : "rainbow"
   );
 </script>
 
@@ -45,16 +43,31 @@
     }
   }
 
-  .platium {
-    @apply text-lavender;
+  .platinum {
+    @apply bg-gradient-to-r from-40% from-lavender via-50% via-[#eee] to-60% to-lavender text-transparent bg-clip-text;
+    background-size: 300%;
+    background-position-x: 100%;
+    animation: shimmer 2s infinite linear;
   }
 
   .gold {
-    @apply text-yellow;
+    @apply bg-gradient-to-r from-40% from-yellow via-50% via-[#fdf6e7] to-60% to-yellow text-transparent bg-clip-text;
+    background-size: 300%;
+    background-position-x: 100%;
+    animation: shimmer 2s infinite linear;
   }
 
   .silver {
-    @apply text-text;
+    @apply bg-gradient-to-r from-40% from-text via-50% via-[#eee] to-60% to-text text-transparent bg-clip-text;
+    background-size: 300%;
+    background-position-x: 100%;
+    animation: shimmer 2s infinite linear;
+  }
+
+  @keyframes shimmer {
+    to {
+      background-position-x: 0%;
+    }
   }
 
   .bronze {
