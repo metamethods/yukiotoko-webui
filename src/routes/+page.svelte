@@ -1,28 +1,39 @@
 <script lang="ts">
-  import Pagination from "$lib/Pagination.svelte";
-  import Rooms from "./Rooms.svelte";
-  import type { YukiotokoRoom } from "$lib/server/yukiotoko";
-  import { PUBLIC_LATEST_VERSION } from "$env/static/public";
-  import Version from "$lib/Version";
-  import Expandable from "$lib/Expandable.svelte";
-  import { onMount } from "svelte";
+  import Pagination from '$lib/Pagination.svelte';
+  import Rooms from './Rooms.svelte';
+  import type { YukiotokoRoom } from '$lib/server/yukiotoko';
+  import { PUBLIC_LATEST_VERSION } from '$env/static/public';
+  import Version from '$lib/Version';
+  import Expandable from '$lib/Expandable.svelte';
+  import { onMount } from 'svelte';
+  import VersionSelector from '$lib/VersionSelector.svelte';
 
   let { data } = $props();
+
+  let latestVersion = Version.fromString(PUBLIC_LATEST_VERSION);
 
   let rooms: YukiotokoRoom[] = $state(data.rooms);
 
   let hideMergedRooms = $state(true);
   let hideClosedRooms = $state(true);
-  let showRoomsAtLatestVersion = $state(false);
+  let filterByVersion = $state(false);
+  let versionFilterMajor = $state(latestVersion.major);
+  let versionFilterMinor = $state(latestVersion.minor);
+  let versionFilterPatch = $state(latestVersion.patch);
+
   let showRoomDetails = $state(false);
 
   let filteredRooms: YukiotokoRoom[] = $derived(
     rooms.filter((room) => {
       if (
         (hideMergedRooms && room.mergedWith) ||
-        (hideClosedRooms && room.status === "Closed") ||
-        (showRoomsAtLatestVersion &&
-          Version.gt(PUBLIC_LATEST_VERSION, room.gameVersion))
+        (hideClosedRooms && room.status === 'Closed') ||
+        (filterByVersion &&
+          !new Version(
+            versionFilterMajor,
+            versionFilterMinor,
+            versionFilterPatch
+          ).eq(Version.fromString(room.gameVersion)))
       )
         return false;
       return true;
@@ -32,13 +43,13 @@
 
   onMount(() => {
     setInterval(async () => {
-      const newRooms: YukiotokoRoom[] = await fetch("/api/rooms")
+      const newRooms: YukiotokoRoom[] = await fetch('/api/rooms')
         .then((response) => response.json())
         .catch(() => undefined);
 
       if (newRooms) rooms = newRooms;
       else {
-        console.log("Failed to fetch");
+        console.log('Failed to fetch');
         /** Probably show some warning saying it failed to update or smh */
       }
     }, 5_000);
@@ -82,10 +93,18 @@
         Hide Closed Rooms
       </label>
       <label>
-        <input type="checkbox" bind:checked={showRoomsAtLatestVersion} />
-        Show Rooms at the Latest Game Version
-        <b>(v{PUBLIC_LATEST_VERSION})</b>
+        <input type="checkbox" bind:checked={filterByVersion} />
+        Filter by Game Version
+        <b>(v{versionFilterMajor}.{versionFilterMinor}.{versionFilterPatch})</b>
       </label>
+      {#if filterByVersion}
+        <VersionSelector
+          bind:major={versionFilterMajor}
+          bind:minor={versionFilterMinor}
+          bind:patch={versionFilterPatch}
+          maxVersion={Version.fromString(PUBLIC_LATEST_VERSION)}
+        />
+      {/if}
     </div>
   </Expandable>
 
