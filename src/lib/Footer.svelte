@@ -26,8 +26,8 @@
         <p class="text-subtext1">Copyright 2025</p>
         <div class="w-auto h-[1px] bg-overlay0 my-2"></div>
         <p>
-          Want access to the <b>Yukiotoko Bot Discord Server</b>? Just hit up a
-          dm with me on discord (<b>metamethods</b>)
+          If you want access to the <b>Yukiotoko Bot Discord Server</b>, just dm
+          me on Discord (<b>metamethods</b>)
         </p>
       </section>
     </div>
