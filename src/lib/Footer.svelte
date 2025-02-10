@@ -5,7 +5,7 @@
         <h1 class="text-subtext0 font-bold">Links</h1>
 
         <div class="flex flex-col">
-          <a href="https://yukiotoko.chara.lol">Yukiotoko</a>
+          <a href="http://yukiotoko.chara.lol">Yukiotoko</a>
           <a href="http://yukiotoko.chara.lol/script">Firewall Script</a>
           <a href="https://www.checkmynat.com/">Nat Checker</a>
           <div class="w-auto h-[1px] bg-overlay0 my-2"></div>
